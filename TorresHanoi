@@ -1,0 +1,130 @@
+import turtle
+import time
+
+# Representación gráfica del problema de las Torres de Hanoi CON 5 DISCOS
+# Por: Mariana Arámbula Vielledent. ID: 00000239652
+
+
+# Configuración de la ventana
+ventana = turtle.Screen()
+ventana.setup(800, 600)  # Tamaño de la ventana
+ventana.title('Torres de Hanoi')
+ventana.tracer(0)  # Desactiva la animación automática para controlar manualmente
+
+# Base de las torres
+base = turtle.Turtle()
+base.color('grey')
+base.shape('square')
+base.up()
+base.goto(0, -200)
+base.shapesize(1, 35)
+
+
+# Representación de una torre
+class Torre(turtle.Turtle):
+    def __init__(self, xpos):
+        # Se inicializa la torre en una posición dada
+        super().__init__(shape='square')
+        self.xpos = xpos
+        self.up()
+        self.color('darkgray')
+        self.shapesize(10, 1)
+        self.goto(self.xpos, -100)
+        self.contador = 0  # Contador de discos en la torre
+        self.posiciones_list = [-180, -160, -140, -120, -100]  # Posiciones posibles de los discos
+        self.discos = []  # Para almacenar los discos en la torre
+
+
+# Represenración un disco
+class Disco(turtle.Turtle):
+    def __init__(self, xpos, ypos, tamano, color):
+        # Se inicializa un disco con posición, tamaño y color
+        super().__init__(shape='square')
+        self.xpos = xpos
+        self.ypos = ypos
+        self.tamano = tamano
+        self.color(color)
+        self.up()
+        self.shapesize(1, self.tamano)
+        self.goto(self.xpos, self.ypos)
+
+
+# Mover un disco de una torre a otra con animación
+def mover_disco(disco, torre):
+    # Elevar el disco y moverlo a la nueva torre
+    while disco.ycor() < 100:
+        disco.goto(disco.xcor(), disco.ycor() + 5)
+        ventana.update()
+    disco.goto(torre.xcor(), 100)
+    ventana.update()
+    #Bajar el disco a su nueva posición en la torre
+    while disco.ycor() > torre.posiciones_list[torre.contador]:
+        disco.goto(disco.xcor(), disco.ycor() - 5)
+        ventana.update()
+    time.sleep(0.25)  # Pausa pra visualizar el movimiento
+
+
+# Mover un disco de una torre a otra (terminal)
+def mover(f, t):
+    print(f'Se mueve el disco de la torre {f} a la torre {t} :)')
+    # Se obtiene el disco superior y la torre de origen
+    if f == 'A':
+        disco_superior = torre1.discos[-1]
+        torre_inicial = torre1
+    elif f == 'B':
+        disco_superior = torre2.discos[-1]
+        torre_inicial = torre2
+    elif f == 'C':
+        disco_superior = torre3.discos[-1]
+        torre_inicial = torre3
+
+    # Se obtiene la torre de destino
+    if t == 'A':
+        torre = torre1
+    elif t == 'B':
+        torre = torre2
+    elif t == 'C':
+        torre = torre3
+
+    # Mover el disco, actualizar los contadores y las listas de discos
+    mover_disco(disco_superior, torre)
+    torre_inicial.contador -= 1
+    torre_inicial.discos.pop()
+    torre.contador += 1
+    torre.discos.append(disco_superior)
+
+
+
+# Resolución al problema de las Torres de Hanoi (función recursiva)
+def hanoi(n, f, h, t):
+    # n: número de discos
+    # f: torre de origen, h: torre auxiliar, t: tore destino
+    if n == 0:  # No hay discos que mover en este caso
+        pass
+    else:
+        # Mover n-1 discos de la torre f a la torre h usando t como auxiliar
+        hanoi(n - 1, f, t, h)
+        # Mover el disco más grande de f a t
+        mover(f, t)
+        # Mover los n-1 discos de h a t usando f como auxiliar
+        hanoi(n - 1, h, f, t)
+
+
+
+# Crear las torres y los discos
+torre1 = Torre(-200)
+torre2 = Torre(0)
+torre3 = Torre(200)
+
+disco1 = Disco(-200, -180, 10, 'darksalmon')
+disco2 = Disco(-200, -160, 8, 'burlywood')
+disco3 = Disco(-200, -140, 6, 'palegoldenrod')
+disco4 = Disco(-200, -120, 4, 'darkseagreen')
+disco5 = Disco(-200, -100, 2, 'lightsteelblue')
+
+
+
+torre1.contador = 5
+torre1.discos = [disco1, disco2, disco3, disco4, disco5]
+
+hanoi(5, 'A', 'B', 'C')
