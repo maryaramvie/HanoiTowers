@@ -1,6 +1,7 @@
 import turtle
 import time
 
+
 # Representación gráfica del problema de las Torres de Hanoi CON 5 DISCOS
 # Por: Mariana Arámbula Vielledent. ID: 00000239652
 
